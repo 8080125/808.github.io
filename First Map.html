@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天地图</title>
+    <!-- 引入OpenLayers地图库 -->
+    <script src="http://webclient.smaryun.com/static/libs/include-openlayers-local.js"></script>
+    <!-- 引入天地图Token验证脚本 -->
+    <script src="http://webclient.smaryun.com/static/assets/js/TDT-token.js"></script>
+    <style>
+        /* 地图容器样式 - 全屏显示 */
+        #mapCon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        /* 注册按钮样式 */
+        .registerClick {
+            position: fixed;        /* 固定定位 */
+            z-index: 1000;           /* 确保按钮显示在地图之上 */
+            padding: 6px 12px;       /* 内边距 */
+            left: 65px;             /* 距离左侧位置 */
+            cursor: pointer;        /* 鼠标手型指针 */
+        }
+    </style>
+</head>
+<body onload="init()">  <!-- 页面加载完成后初始化地图 -->
+    <!-- 地图显示容器 -->
+    <div id="mapCon" style="position: absolute; width: 100%; height: 100%"></div>
+    <!-- 功能操作按钮 -->
+    <button class="registerClick">注册点击事件</button>
+
+    <script>
+        // 定义全局变量
+        let map;            // OpenLayers地图对象
+        let vectorSource;   // 矢量数据源（存储点要素）
+        let vectorLayer;    // 矢量图层（显示点要素）
+
+        // 初始加载方法
+        function init() {
+            // 初始化地图对象
+            map = new ol.Map({
+                target: 'mapCon',  // 绑定到HTML元素
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([104.912777, 34.730746]),  // 中心点坐标（转换为墨卡托投影）
+                    zoom: 4         // 初始缩放级别
+                })
+            });
+
+            // 创建天地图影像底图图层
+            layer = new Zondy.Map.TianDiTu({
+                layerType: 'img',      // 图层类型：影像底图
+                tileMatrixSet: 'w',    // 切片方案：Web墨卡托
+                token: getTDTToken(),  // 从TDT-token.js获取令牌
+            });
+            map.addLayer(layer);      // 添加图层到地图
+
+            // 创建天地图注记图层
+            layer2 = new Zondy.Map.TianDiTu({
+                layerType: 'cia',     // 图层类型：中文注记
+                tileMatrixSet: 'w',
+                token: getTDTToken(),
+            });
+            map.addLayer(layer2);     // 添加注记图层
+        }
+
+        // 获取注册按钮并绑定点击事件
+        let registerClick = document.querySelector('.registerClick');
+        registerClick.addEventListener('click', function () {
+            al();  // 调用功能注册方法
+        });
+        
+        // 注册点击事件功能实现
+        function al() {
+            // 创建矢量数据源（存储点要素）
+            vectorSource = new ol.source.Vector();
+            
+            // 创建矢量图层并设置样式
+            vectorLayer = new ol.layer.Vector({
+                source: vectorSource,  // 绑定数据源
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 6,          // 点标记半径
+                        fill: new ol.style.Fill({ 
+                            color: 'red'    // 填充颜色
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'black', // 边框颜色
+                            width: 1        // 边框宽度
+                        })
+                    })
+                })
+            });
+            map.addLayer(vectorLayer);  // 添加矢量图层到地图
+
+            // 绑定地图点击事件
+            map.on('click', function (e) {
+                // 获取点击位置的坐标（墨卡托投影坐标）
+                let coordinates = e.coordinate;
+                
+                // 创建点要素
+                let feature = new ol.Feature({
+                    geometry: new ol.geom.Point(coordinates)
+                });
+                
+                // 将要素添加到数据源
+                vectorSource.addFeature(feature);
+            });
+        }
+    </script>
+</body>
+</html>
