@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维地图示例</title>
+    <!-- GIS开发库引入 -->
+    <script src="cdn/cesium/Cesium.js"></script>                     <!-- Cesium核心库 -->
+    <script src="cdn/zondyclient/webclient-common.min.js"></script>  <!-- 中地库通用模块 -->
+    <script src="cdn/zondyclient/webclient-cesium-plugin.min.js"></script> <!-- Cesium插件 -->
+    <link rel="stylesheet" href="cdn/cesium/Widgets/widgets.css">    <!-- Cesium组件样式 -->
+    
+    <style> 
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 地图容器全屏显示 */
+        #mapCon {
+            width: 100vw;  /* 视口宽度100% */
+            height: 100vh; /* 视口高度100% */
+        }
+        
+        /* 控制面板定位样式 */
+        .control-panel {
+            position: fixed;  /* 固定定位 */
+            z-index: 1000;    /* 确保悬浮在地图之上 */
+            padding: 5px;     /* 内边距 */
+        }  
+
+        /* 按钮通用样式 */
+        button {
+            padding: 6px 12px; /* 按钮内边距 */
+            cursor: pointer;   /* 鼠标手型指针 */
+        }
+    </style>
+</head>
+<body onload="init()">  <!-- 页面加载完成后初始化地图 -->
+    <!-- 功能控制面板 -->
+    <div class="control-panel">
+        <button onclick="loadM3D()">加载M3D</button>          <!-- M3D数据加载按钮 -->
+        <button onclick="load3DTiles()">加载3DTiles</button> <!-- 倾斜摄影加载按钮 -->
+        <button onclick="registerClick()">注册点击事件</button> <!-- 事件交互按钮 -->
+    </div>
+    
+    <!-- 地图显示容器 -->
+    <div id="mapCon"></div>
+
+    <script>
+        // 全局变量定义
+        let sceneView; // 三维场景视图对象
+        let map;       // 地图对象
+        let layer;     // 当前图层对象
+        let clickHandler; // 点击事件处理器
+
+        //初始加载方法
+        function init() {
+            // 创建地图实例
+            map = new zondy.Map();
+            
+            // 初始化三维场景视图
+            sceneView = new zondy.cesium.SceneView({
+                viewId: "mapCon",  // 绑定DOM容器ID
+                map: map           // 关联地图对象
+            });
+        }
+
+        //加载M3D图层
+        function loadM3D() {
+            // 创建M3D模型缓存图层
+            layer = new zondy.layer.M3DModelCacheLayer({
+                url: "http://webclient.smaryun.com:8089/igs/rest/services/M3Dv2/zondyOSGB/M3dServer", // 服务地址
+                extensionOptions: {
+                    autoReset: true // 自动跳转到图层范围
+                }
+            });
+            map.add(layer); // 添加图层到地图
+        }
+       
+        //加载3DTiles倾斜摄影
+        function load3DTiles() {
+            // 创建3DTiles缓存图层
+            layer = new zondy.layer.Cesium3DTilesCacheLayer({
+                url: "http://webclient.smaryun.com:8200/3DData/ModelCache/3DTileset/1.0/dayantaresult/tileset.json", // 数据地址
+                extensionOptions: {
+                    autoReset: true // 视角自动适配
+                }
+            });
+            map.add(layer); // 添加图层到地图
+        }
+
+        // 注册点击事件
+        function registerClick() {
+            // 如果已经存在点击事件处理器，先移除它
+            if (clickHandler) {
+                clickHandler.destroy();
+            }
+
+            // 注册点击事件
+            clickHandler = new Cesium.ScreenSpaceEventHandler(sceneView.scene.canvas);
+            clickHandler.setInputAction(function(click) {
+                // 获取点击位置的笛卡尔坐标
+                const ray = sceneView.camera.getPickRay(click.position);
+                const cartesian = sceneView.scene.globe.pick(ray, sceneView.scene);
+                
+                if (cartesian) {
+                    // 创建点实体
+                    const entity = new Cesium.Entity({
+                        position: cartesian,
+                        point: {
+                            pixelSize: 10,
+                            color: Cesium.Color.RED,
+                            outlineColor: Cesium.Color.BLACK,
+                            outlineWidth: 1,
+                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                        }
+                    });
+
+                    // 添加点到场景
+                    sceneView.entities.add(entity);
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        }
+    </script>
+</body>
+</html>
