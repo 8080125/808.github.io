@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS开发展示 - 地理信息科学作品集</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2a5298;
+        }
+
+        .project-content p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #2a5298;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #1e3c72;
+        }
+
+        .skills {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .skills h2 {
+            color: #2a5298;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .skill-tag {
+            background: #e9ecef;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2a5298;
+            color: white;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>GIS开发展示</h1>
+        <p>地理信息科学 | Web GIS开发 | 空间数据分析</p>
+    </header>
+
+    <div class="container">
+        <div class="projects">
+            <div class="project-card">
+                <div class="project-image" style="background-image: url('https://img.freepik.com/free-vector/3d-earth-graphic-symbolizing-global-trade-illustration_456031-125.jpg')"></div>
+                <div class="project-content">
+                    <h3>三维地图可视化</h3>
+                    <p>基于Cesium的三维地图应用，支持M3D模型加载、3DTiles倾斜摄影数据展示，以及交互式点位标注功能。</p>
+                    <a href="Frist3DMap.html" class="btn">查看项目 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image" style="background-image: url('https://img.freepik.com/free-vector/topographic-contour-lines-map-seamless-pattern_1284-52862.jpg')"></div>
+                <div class="project-content">
+                    <h3>二维天地图应用</h3>
+                    <p>基于OpenLayers的二维地图应用，集成天地图服务，实现地图浏览、坐标拾取等基础GIS功能。</p>
+                    <a href="zww二维.html" class="btn">查看项目 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills">
+            <h2>技术栈</h2>
+            <div class="skill-tags">
+                <span class="skill-tag">Cesium</span>
+                <span class="skill-tag">OpenLayers</span>
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">HTML5</span>
+                <span class="skill-tag">CSS3</span>
+                <span class="skill-tag">GIS开发</span>
+                <span class="skill-tag">空间数据处理</span>
+                <span class="skill-tag">地图服务</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 GIS Portfolio | 地理信息科学专业作品展示</p>
+    </footer>
+</body>
+</html> 
